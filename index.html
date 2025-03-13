@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infinite Scroll Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      padding-bottom: 50px;
+    }
+
+    .container {
+      width: 80%;
+      margin: 0 auto;
+    }
+
+    .post {
+      background-color: #f4f4f4;
+      margin: 10px 0;
+      padding: 15px;
+      border: 1px solid #ddd;
+    }
+
+    .loading {
+      text-align: center;
+      margin: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="post-container">
+    <!-- Posts will be appended here -->
+  </div>
+
+  <div class="loading" id="loading">
+    <p>Loading more posts...</p>
+  </div>
+
+  <script>
+    const postContainer = document.getElementById('post-container');
+    const loading = document.getElementById('loading');
+    let postCount = 0;
+    let limit = 10; // Number of posts to load each time
+    let page = 1; // To track the current page of data
+
+    // Function to create a new post element and append to the container
+    function createPost() {
+      for (let i = 0; i < limit; i++) {
+        const post = document.createElement('div');
+        post.classList.add('post');
+        post.innerHTML = `
+          <h3>Post #${postCount + 1}</h3>
+          <p>This is post content for post number ${postCount + 1}.</p>
+        `;
+        postContainer.appendChild(post);
+        postCount++;
+      }
+    }
+
+    // Simulate fetching data (In a real-world application, you would fetch data from an API)
+    function fetchData() {
+      setTimeout(() => {
+        createPost();
+        loading.style.display = 'none'; // Hide the loading spinner
+      }, 1000); // Simulate network delay of 1 second
+    }
+
+    // Infinite scroll handler
+    function handleScroll() {
+      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+      if (scrollTop + clientHeight >= scrollHeight - 5) {
+        // Show the loading spinner
+        loading.style.display = 'block';
+
+        // Fetch and append new data
+        fetchData();
+      }
+    }
+
+    // Load initial posts
+    createPost();
+
+    // Event listener for scrolling
+    window.addEventListener('scroll', handleScroll);
+  </script>
+</body>
+</html>
